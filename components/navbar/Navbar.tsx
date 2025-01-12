@@ -1,5 +1,5 @@
 import React from "react";
-import DarkMode from "./DarkMode";
+import { ModeToggle } from "./DarkMode";
 import Logo from "./Logo";
 import NavSearch from "./NavSearch";
 import LinksDropdown from "./LinksDropdown";
@@ -11,7 +11,7 @@ function Navbar() {
         <Logo />
         <NavSearch />
         <div className="flex gap-4 items-center">
-          <DarkMode />
+          <ModeToggle />
           <LinksDropdown />
         </div>
       </div>
