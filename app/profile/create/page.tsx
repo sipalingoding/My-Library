@@ -11,9 +11,9 @@ function Create() {
       <div className="border rounded-sm  p-8">
         <FormContainer action={createProfileAction}>
           <div className="grid md:grid-cols-2 gap-4">
-            <FormInput id="firstName" name="firstName" type="text" />
-            <FormInput id="lastName" name="lastName" type="text" />
-            <FormInput id="userName" name="userName" type="text" />
+            <FormInput name="firstName" type="text" label="First Name" />
+            <FormInput name="lastName" type="text" label="Last Name" />
+            <FormInput name="userName" type="text" label="Username" />
           </div>
           <SubmitButton />
         </FormContainer>

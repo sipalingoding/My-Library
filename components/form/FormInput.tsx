@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 type PropInput = {
-  id: string;
   name: string;
   type: string;
   defaultValue?: string;
@@ -20,10 +19,10 @@ function FormInput(prop: PropInput) {
       </Label>
       <Input
         type={type}
-        id={name}
         name={name}
         defaultValue={defaultValue}
         placeholder={placeholder}
+        required
       />
     </div>
   );

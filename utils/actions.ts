@@ -7,9 +7,10 @@ export const createProfileAction = async (
   formData: FormData
 ) => {
   try {
-    console.log(formData);
     const rawData = Object.fromEntries(formData);
+    console.log(rawData);
     const profileSchema = profileSchemas.parse(rawData);
+
     console.log("data sukse", profileSchema);
     return { message: "profile created!" };
   } catch (error) {
