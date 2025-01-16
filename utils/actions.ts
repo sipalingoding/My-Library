@@ -33,11 +33,26 @@ export const createProfileAction = async (
       },
     });
   } catch (error) {
-    console.log(error);
     return {
       message: error instanceof Error ? error.message : "there will be error",
     };
   }
 
   redirect("/");
+};
+
+export const fetchProfileImage = async () => {
+  const user = await currentUser();
+  if (!user) return null;
+
+  const profileImage = await db.profile.findUnique({
+    where: {
+      clerkId: user.id,
+    },
+    select: {
+      profileImage: true,
+    },
+  });
+
+  return profileImage?.profileImage;
 };

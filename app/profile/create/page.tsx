@@ -3,8 +3,12 @@ import FormContainer from "@/components/form/FormContainer";
 import FormInput from "@/components/form/FormInput";
 import { createProfileAction } from "@/utils/actions";
 import React from "react";
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-function Create() {
+async function Create() {
+  const user = await currentUser();
+  if (user?.privateMetadata?.hasProfile) redirect("/");
   return (
     <section>
       <h1 className="text-2xl capitalize mb-8 font-semibold">New User</h1>
