@@ -1,10 +1,17 @@
 "use server";
 
-import { profileSchemas } from "./schemas";
+import { profileSchemas, validateWithZodSchema } from "./schemas";
 import db from "./db";
 import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+
+export const handlingError = (error: unknown): { message: string } => {
+  console.log(error);
+  return {
+    message: error instanceof Error ? error.message : "there will be error",
+  };
+};
 
 export const createProfileAction = async (
   prevState: any,
@@ -16,14 +23,14 @@ export const createProfileAction = async (
     if (!user) throw new Error("please login with user");
 
     const rawData = Object.fromEntries(formData);
-    const profileSchema = profileSchemas.parse(rawData);
+    const validateField = validateWithZodSchema(profileSchemas, rawData);
 
     await db.profile.create({
       data: {
         clerkId: user.id,
         email: user.emailAddresses[0].emailAddress,
         profileImage: user?.imageUrl ?? "",
-        ...profileSchema,
+        ...validateField,
       },
     });
 
@@ -33,9 +40,7 @@ export const createProfileAction = async (
       },
     });
   } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : "there will be error",
-    };
+    handlingError(error);
   }
 
   redirect("/");
@@ -62,7 +67,7 @@ export const getAuthUser = async () => {
   if (!user) {
     throw new Error("you must be logged in");
   }
-  if (user.privateMetadata.hasProfile) {
+  if (!user.privateMetadata.hasProfile) {
     redirect("/profile/create");
   }
 
@@ -89,5 +94,20 @@ export const updateProfileAction = async (
   prevData: any,
   formData: FormData
 ): Promise<{ message: string }> => {
-  return { message: "update profile action" };
+  const user = await getAuthUser();
+
+  try {
+    const rawData = Object.fromEntries(formData);
+    const validateFields = validateWithZodSchema(profileSchemas, rawData);
+    await db.profile.update({
+      where: {
+        clerkId: user.id,
+      },
+      data: validateFields,
+    });
+    revalidatePath("/profile");
+    return { message: "update profile action" };
+  } catch (error) {
+    return handlingError(error);
+  }
 };
