@@ -6,15 +6,19 @@ import { Button } from "@/components/ui/button";
 type SubmitButtonProps = {
   className?: string;
   text?: string;
+  size?: buttonSize;
 };
+
+type buttonSize = "default" | "lg" | "sm";
 
 export function SubmitButton({
   className = "",
   text = "submit",
+  size = "lg",
 }: SubmitButtonProps) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" size="lg" className={`capitalize ${className}`}>
+    <Button type="submit" size={size} className={`capitalize ${className}`}>
       {pending ? (
         <>
           <ReloadIcon /> Please wait....
