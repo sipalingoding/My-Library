@@ -26,3 +26,20 @@ export function validateWithZodSchema<T>(
 
   return result.data;
 }
+
+export const imageSchema = z.object({
+  image: validateFile(),
+});
+
+function validateFile() {
+  const maxFileSize = 1024 * 1024;
+  const typeFile = ["image/"];
+  return z
+    .instanceof(File)
+    .refine((file) => {
+      return !file || file.size < maxFileSize;
+    }, "File Size must be less than 1 Mb")
+    .refine((file) => {
+      return !file || typeFile.some((type) => file.type.startsWith(type));
+    }, "Type must be file");
+}
